@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Search, ShoppingCart, Download, Lock, CircleCheck, AlertCircle, QrCode, ExternalLink, RefreshCcw } from "lucide-react"
+import { Search, ShoppingCart, Download, Lock, CheckCircle2, AlertCircle, QrCode, ExternalLink, RefreshCcw } from "lucide-react"
 import { toast } from "sonner"
 import Script from "next/script"
 import Image from "next/image"
@@ -316,7 +316,7 @@ export function PYQList({ initialPYQs }: { initialPYQs: PYQ[] }) {
                   <span className="text-2xl font-bold">₹{pyq.price}</span>
                   {isPurchased ? (
                     <Badge className="bg-green-500/10 text-green-500 border-none flex gap-1 items-center">
-                      <CircleCheck className="h-3 w-3" /> Purchased
+                      <CheckCircle2 className="h-3 w-3" /> Purchased
                     </Badge>
                   ) : (
                     <Badge variant="outline" className="border-zinc-700 text-zinc-400">
@@ -426,10 +426,10 @@ export function PYQList({ initialPYQs }: { initialPYQs: PYQ[] }) {
                 </div>
                 <Button type="submit" className="w-full gap-2" disabled={isVerifying}>
                   {isVerifying ? "Submitting..." : (
-                      <>
-                        <CircleCheck className="h-4 w-4" />
-                        I have Paid ₹{checkoutPYQ?.price}
-                      </>
+                    <>
+                      <CheckCircle2 className="h-4 w-4" />
+                      I have Paid ₹{checkoutPYQ?.price}
+                    </>
                   )}
                 </Button>
               </form>

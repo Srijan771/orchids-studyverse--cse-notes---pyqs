@@ -161,10 +161,10 @@ export default function AdminSettingsPage() {
             password: passwords.new
           })
           if (error) throw error
-            toast.success("Password changed successfully")
-            
-            setPasswords({ current: "", new: "", confirm: "", passkey: "" })
-          } catch (error: any) {
+          toast.success("Password changed successfully")
+          
+          setPasswords({ current: "", new: "", confirm: "", passkey: "", founder_key: "" })
+        } catch (error: any) {
           toast.error(error.message)
         } finally {
           setIsLoading(false)

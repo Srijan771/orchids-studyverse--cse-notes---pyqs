@@ -18,13 +18,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8720393672493597"
-          crossOrigin="anonymous"
-        />
-      </head>
       <body className="antialiased font-sans">
         <ThemeProvider
           attribute="class"
@@ -39,8 +32,6 @@ export default function RootLayout({
             data-orchids-project-id="e8d42493-9eaa-4ac8-986b-467adebdf05c"
           />
           <ErrorReporter />
-
-
           <Script
             src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/scripts//route-messenger.js"
             strategy="afterInteractive"

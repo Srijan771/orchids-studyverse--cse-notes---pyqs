@@ -48,7 +48,6 @@ export function AdminSidebar() {
   const menuItems = [
     { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
     { name: "Manage Notes", href: "/admin/notes", icon: FileText },
-    { name: "Manage Subjects", href: "/admin/subjects", icon: GraduationCap },
     { name: "Manage PYQs", href: "/admin/pyqs", icon: BookOpen },
     { name: "Purchase Orders", href: "/admin/orders", icon: ShoppingCart },
     { name: "User Reviews", href: "/admin/reviews", icon: Star },
