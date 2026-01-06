@@ -3,12 +3,10 @@ import { Footer } from "@/components/Footer"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { CheckCircle2, Download, ArrowRight, Zap, Star, Users, MessageCircle } from "lucide-react"
+import { CheckCircle2, Download, ArrowRight, Zap, Star, Users } from "lucide-react"
 import Link from "next/link"
 import { supabase } from "@/lib/supabase"
 import Image from "next/image"
-import { ReviewsList } from "@/components/ReviewsList"
-import { ReviewForm } from "@/components/ReviewForm"
 
 async function getNotices() {
   const { data } = await supabase
@@ -148,33 +146,27 @@ export default async function Home() {
 
         {/* Social Proof */}
         <section className="py-24 px-4 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-7xl">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold">Loved by Students</h2>
-              <p className="mt-4 text-zinc-400">See what your peers are saying about StudyVerse</p>
+          <div className="mx-auto max-w-7xl text-center">
+            <h2 className="text-3xl font-bold">Loved by Students</h2>
+            <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+              {[1, 2, 3].map((i) => (
+                <Card key={i} className="border-white/5 bg-zinc-900/30 p-6 text-left">
+                  <div className="flex gap-1 mb-4 text-yellow-500">
+                    {[1, 2, 3, 4, 5].map((s) => <Star key={s} className="h-4 w-4 fill-current" />)}
+                  </div>
+                  <p className="text-zinc-300 italic">
+                    "StudyVerse made my 3rd semester preparation so much easier. The PYQ solutions are clear and worth every penny!"
+                  </p>
+                  <div className="mt-6 flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-full bg-zinc-800" />
+                    <div>
+                      <div className="text-sm font-semibold text-white">BTech Student</div>
+                      <div className="text-xs text-zinc-500">CSE, 3rd Sem</div>
+                    </div>
+                  </div>
+                </Card>
+              ))}
             </div>
-            
-            <ReviewsList />
-
-            <div className="mt-20 mx-auto max-w-2xl">
-              <ReviewForm />
-            </div>
-          </div>
-        </section>
-
-        {/* Support CTA */}
-        <section className="py-20 px-4 sm:px-6 lg:px-8 bg-zinc-950/50">
-          <div className="mx-auto max-w-4xl text-center">
-            <h2 className="text-3xl font-bold">Need Any Help?</h2>
-            <p className="mt-4 text-zinc-400 mb-8">
-              Our support team is always ready to assist you with your queries.
-            </p>
-            <Button asChild variant="outline" size="lg" className="border-primary/20 hover:bg-primary/5">
-              <Link href="/helpline" className="flex items-center gap-2">
-                <MessageCircle className="h-5 w-5" />
-                Visit Helpline Center
-              </Link>
-            </Button>
           </div>
         </section>
       </main>

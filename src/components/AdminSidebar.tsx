@@ -12,9 +12,7 @@ import {
   History, 
   LogOut,
   GraduationCap,
-  ShoppingCart,
-  Star,
-  LifeBuoy
+  ShoppingCart
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { createClient } from "@/lib/supabase/client"
@@ -50,12 +48,10 @@ export function AdminSidebar() {
     { name: "Manage Notes", href: "/admin/notes", icon: FileText },
     { name: "Manage PYQs", href: "/admin/pyqs", icon: BookOpen },
     { name: "Purchase Orders", href: "/admin/orders", icon: ShoppingCart },
-    { name: "User Reviews", href: "/admin/reviews", icon: Star },
-    { name: "Support Requests", href: "/admin/support", icon: LifeBuoy },
-    { name: "Notices", href: "/admin/notices", icon: Bell },
-    { name: "System Logs", href: "/admin/logs", icon: History, ownerOnly: true },
-    { name: "Settings", href: "/admin/settings", icon: Settings, ownerOnly: true },
-  ]
+      { name: "Notices", href: "/admin/notices", icon: Bell },
+      { name: "System Logs", href: "/admin/logs", icon: History, ownerOnly: true },
+      { name: "Settings", href: "/admin/settings", icon: Settings, ownerOnly: true },
+    ]
 
   const filteredItems = menuItems.filter(item => !item.ownerOnly || role === 'owner')
 
