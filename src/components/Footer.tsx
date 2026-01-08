@@ -35,7 +35,7 @@ export function Footer() {
   return (
     <footer className="border-t border-white/10 bg-black py-12">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 gap-12 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-12 md:grid-cols-4">
           {/* Brand */}
           <div className="flex flex-col gap-4">
             <Link href="/" className="flex items-center gap-2">
@@ -49,6 +49,28 @@ export function Footer() {
             </p>
           </div>
 
+          {/* Quick Links */}
+          <div className="flex flex-col gap-4">
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-white">Quick Links</h3>
+            <div className="flex flex-col gap-2">
+              <Link href="/" className="text-sm text-zinc-400 hover:text-white transition-colors">Home</Link>
+              <Link href="/notes" className="text-sm text-zinc-400 hover:text-white transition-colors">Free Notes</Link>
+              <Link href="/pyqs" className="text-sm text-zinc-400 hover:text-white transition-colors">PYQ Solutions</Link>
+              <Link href="/helpline" className="text-sm text-zinc-400 hover:text-white transition-colors">Helpline</Link>
+            </div>
+          </div>
+
+          {/* Legal */}
+          <div className="flex flex-col gap-4">
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-white">Legal</h3>
+            <div className="flex flex-col gap-2">
+              <Link href="/about" className="text-sm text-zinc-400 hover:text-white transition-colors">About Us</Link>
+              <Link href="/privacy" className="text-sm text-zinc-400 hover:text-white transition-colors">Privacy Policy</Link>
+              <Link href="/terms" className="text-sm text-zinc-400 hover:text-white transition-colors">Terms &amp; Conditions</Link>
+              <Link href="/contact" className="text-sm text-zinc-400 hover:text-white transition-colors">Contact Us</Link>
+            </div>
+          </div>
+
           {/* Connect */}
           <div className="flex flex-col gap-4">
             <h3 className="text-sm font-semibold uppercase tracking-wider text-white">Connect With Us</h3>
@@ -60,11 +82,11 @@ export function Footer() {
                   className="flex items-center gap-2 text-sm text-zinc-400 transition-colors hover:text-white"
                 >
                   <Mail className="h-4 w-4" />
-                  {email}
+                  <span className="truncate">{email}</span>
                 </a>
               ))}
             </div>
-            <div className="flex gap-4">
+            <div className="flex gap-4 mt-2">
               {socialLinks.map((link) => (
                 <a
                   key={link.name}
@@ -79,23 +101,19 @@ export function Footer() {
               ))}
             </div>
           </div>
-
-          {/* Quick Links */}
-          <div className="flex flex-col gap-4">
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-white">Quick Links</h3>
-            <div className="grid grid-cols-2 gap-2">
-              <Link href="/" className="text-sm text-zinc-400 hover:text-white">Home</Link>
-              <Link href="/notes" className="text-sm text-zinc-400 hover:text-white">Free Notes</Link>
-              <Link href="/pyqs" className="text-sm text-zinc-400 hover:text-white">PYQ Solutions</Link>
-              <Link href="/admin" className="text-sm text-zinc-400 hover:text-white">Admin Panel</Link>
-            </div>
-          </div>
         </div>
 
-        <div className="mt-12 border-t border-white/5 pt-8 text-center">
-          <p className="text-xs text-zinc-500">
-            © {new Date().getFullYear()} StudyVerse. All rights reserved. Built for BTech CSE Students.
-          </p>
+        <div className="mt-12 border-t border-white/5 pt-8">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-xs text-zinc-500">
+              © {new Date().getFullYear()} StudyVerse. All rights reserved. Built for BTech CSE Students.
+            </p>
+            <div className="flex gap-4 text-xs text-zinc-500">
+              <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
+              <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
+              <Link href="/contact" className="hover:text-white transition-colors">Contact</Link>
+            </div>
+          </div>
         </div>
       </div>
     </footer>

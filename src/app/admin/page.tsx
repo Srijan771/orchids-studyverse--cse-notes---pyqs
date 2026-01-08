@@ -2,6 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { FileText, BookOpen, ShoppingCart, Download, TrendingUp, History } from "lucide-react"
 import { createClient } from "@/lib/supabase/server"
 
+export const dynamic = 'force-dynamic'
+
 async function getStats() {
   const supabase = await createClient()
   const [

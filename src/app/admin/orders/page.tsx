@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
-import { CheckCircle2, XCircle, Clock, ExternalLink, RefreshCcw } from "lucide-react"
+import { CircleCheck, XCircle, Clock, ExternalLink, RefreshCcw } from "lucide-react"
 import { toast } from "sonner"
 
 export default function AdminOrdersPage() {
@@ -51,7 +51,7 @@ export default function AdminOrdersPage() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'COMPLETED':
-        return <Badge className="bg-green-500/10 text-green-500 border-none"><CheckCircle2 className="h-3 w-3 mr-1" /> Verified</Badge>
+        return <Badge className="bg-green-500/10 text-green-500 border-none"><CircleCheck className="h-3 w-3 mr-1" /> Verified</Badge>
       case 'PENDING_VERIFICATION':
         return <Badge className="bg-amber-500/10 text-amber-500 border-none"><Clock className="h-3 w-3 mr-1" /> Manual Review</Badge>
       case 'FAILED':

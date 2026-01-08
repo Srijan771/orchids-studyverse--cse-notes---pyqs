@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"
 import { toast } from "sonner"
-import { Shield, CreditCard, Lock, Key, Users, UserPlus, Trash2, Ban, Unlock } from "lucide-react"
+import { Shield, CreditCard, Lock, Key, Users, UserPlus, Trash2, Ban, Unlock, Monitor, Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 export default function AdminSettingsPage() {
@@ -23,8 +23,13 @@ export default function AdminSettingsPage() {
     razorpay_mode: "test",
     admin_email: "princesrijan77@gmail.com",
     secret_passkey: "studyverse_secret_123",
+    glow_enabled: "true",
+    glow_color: "#FFD700",
+    glow_intensity: "200",
+    glow_width: "2",
+    glow_duration: "4",
   })
-  
+
   const [passwords, setPasswords] = useState({
     current: "",
     new: "",
@@ -33,41 +38,49 @@ export default function AdminSettingsPage() {
   })
   
   const [isLoading, setIsLoading] = useState(true)
+  const [isUpdating, setIsUpdating] = useState(false)
 
   useEffect(() => {
     checkAccess()
   }, [])
 
   const checkAccess = async () => {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) {
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) {
+        router.push("/admin/login")
+        return
+      }
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single()
+
+      if (!profile) {
+        router.push("/admin/login")
+        return
+      }
+
+      setRole(profile.role)
+      await fetchSettings()
+      if (profile.role === 'owner') {
+        await fetchAdmins()
+      }
+    } catch (error) {
+      console.error("Access check failed:", error)
       router.push("/admin/login")
-      return
+    } finally {
+      setIsLoading(false)
     }
-
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single()
-
-    if (!profile) {
-      router.push("/admin/login")
-      return
-    }
-
-    setRole(profile.role)
-    if (profile.role === 'owner') {
-      await Promise.all([fetchSettings(), fetchAdmins()])
-    }
-    setIsLoading(false)
   }
 
   const fetchAdmins = async () => {
     const { data } = await supabase
       .from('profiles')
       .select('*')
-      .eq('role', 'admin') // Only fetch admins, hide owner
+      .eq('role', 'admin')
       .order('created_at', { ascending: false })
     if (data) setAdmins(data)
   }
@@ -125,7 +138,7 @@ export default function AdminSettingsPage() {
   }
 
   const handleUpdateSettings = async (keys: string[]) => {
-    setIsLoading(true)
+    setIsUpdating(true)
     try {
       const updates = keys.map(key => ({
         key,
@@ -139,39 +152,44 @@ export default function AdminSettingsPage() {
     } catch (error: any) {
       toast.error(error.message)
     } finally {
-      setIsLoading(false)
+      setIsUpdating(false)
     }
   }
 
-      const handlePasswordChange = async (e: React.FormEvent) => {
-        e.preventDefault()
-        if (passwords.new !== passwords.confirm) {
-          toast.error("New passwords do not match")
-          return
-        }
+  const handlePasswordChange = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (passwords.new !== passwords.confirm) {
+      toast.error("New passwords do not match")
+      return
+    }
 
-        if (passwords.passkey !== settings.secret_passkey) {
-          toast.error("Invalid secret passkey")
-          return
-        }
+    if (role === 'owner' && passwords.passkey !== settings.secret_passkey) {
+      toast.error("Invalid secret passkey")
+      return
+    }
 
-        setIsLoading(true)
-        try {
-          const { error } = await supabase.auth.updateUser({
-            password: passwords.new
-          })
-          if (error) throw error
-          toast.success("Password changed successfully")
-          
-          setPasswords({ current: "", new: "", confirm: "", passkey: "", founder_key: "" })
-        } catch (error: any) {
-          toast.error(error.message)
-        } finally {
-          setIsLoading(false)
-        }
-      }
+    setIsUpdating(true)
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: passwords.new
+      })
+      if (error) throw error
+      toast.success("Password changed successfully")
+      setPasswords({ current: "", new: "", confirm: "", passkey: "" })
+    } catch (error: any) {
+      toast.error(error.message)
+    } finally {
+      setIsUpdating(false)
+    }
+  }
 
-
+  if (isLoading) {
+    return (
+      <div className="flex min-h-[400px] items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-8">
@@ -262,65 +280,154 @@ export default function AdminSettingsPage() {
                               {admin.status === 'active' ? <Ban className="h-3 w-3 mr-1" /> : <Unlock className="h-3 w-3 mr-1" />}
                               {admin.status === 'active' ? 'Lock' : 'Unlock'}
                             </Button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Razorpay Settings */}
-            <Card className="border-white/10 bg-zinc-900/50">
-              <CardHeader>
-                <div className="flex items-center gap-2">
-                  <CreditCard className="h-5 w-5 text-primary" />
-                  <CardTitle>Razorpay Configuration</CardTitle>
-                </div>
-                <CardDescription>Configure your payment gateway credentials.</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between rounded-lg border border-white/5 bg-white/5 p-4">
-                  <div className="space-y-0.5">
-                    <label className="text-sm font-medium">Enable Payments</label>
-                    <p className="text-xs text-zinc-500">Allow users to buy PYQ solutions.</p>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
-                  <Switch 
-                    checked={settings.razorpay_enabled === "true"} 
-                    onCheckedChange={(v) => setSettings({ ...settings, razorpay_enabled: String(v) })}
+                </CardContent>
+              </Card>
+            </>
+          )}
+
+          {/* Razorpay Settings */}
+        <Card className="border-white/10 bg-zinc-900/50">
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              <CreditCard className="h-5 w-5 text-primary" />
+              <CardTitle>Razorpay Configuration</CardTitle>
+            </div>
+            <CardDescription>Configure your payment gateway credentials.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center justify-between rounded-lg border border-white/5 bg-white/5 p-4">
+              <div className="space-y-0.5">
+                <label className="text-sm font-medium">Enable Payments</label>
+                <p className="text-xs text-zinc-500">Allow users to buy PYQ solutions.</p>
+              </div>
+              <Switch 
+                checked={settings.razorpay_enabled === "true"} 
+                onCheckedChange={(v) => setSettings({ ...settings, razorpay_enabled: String(v) })}
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Key ID</label>
+              <Input 
+                value={settings.razorpay_key_id} 
+                onChange={e => setSettings({ ...settings, razorpay_key_id: e.target.value })}
+                className="bg-black/50 border-white/10"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Key Secret</label>
+              <Input 
+                type="password"
+                value={settings.razorpay_key_secret} 
+                onChange={e => setSettings({ ...settings, razorpay_key_secret: e.target.value })}
+                className="bg-black/50 border-white/10"
+              />
+            </div>
+
+            <Button 
+              onClick={() => handleUpdateSettings(['razorpay_key_id', 'razorpay_key_secret', 'razorpay_enabled'])}
+              className="w-full"
+              disabled={isLoading}
+            >
+              Save Payment Settings
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* Glow Effect Settings */}
+        <Card className="border-white/10 bg-zinc-900/50">
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              <Monitor className="h-5 w-5 text-primary" />
+              <CardTitle>Glow Effect (Border Beam)</CardTitle>
+            </div>
+            <CardDescription>Customize the animated glow on subject cards.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center justify-between rounded-lg border border-white/5 bg-white/5 p-4">
+              <div className="space-y-0.5">
+                <label className="text-sm font-medium">Enable Glow Effect</label>
+                <p className="text-xs text-zinc-500">Show moving beam on subject thumbnails.</p>
+              </div>
+              <Switch 
+                checked={settings.glow_enabled === "true"} 
+                onCheckedChange={(v) => setSettings({ ...settings, glow_enabled: String(v) })}
+              />
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Glow Color</label>
+                <div className="flex gap-2">
+                  <Input 
+                    type="color"
+                    value={settings.glow_color} 
+                    onChange={e => setSettings({ ...settings, glow_color: e.target.value })}
+                    className="w-12 h-10 p-1 bg-black/50 border-white/10"
+                  />
+                  <Input 
+                    value={settings.glow_color} 
+                    onChange={e => setSettings({ ...settings, glow_color: e.target.value })}
+                    className="flex-1 bg-black/50 border-white/10 uppercase"
                   />
                 </div>
-                
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Beam Intensity (Size)</label>
+                <Input 
+                  type="number"
+                  value={settings.glow_intensity} 
+                  onChange={e => setSettings({ ...settings, glow_intensity: e.target.value })}
+                  className="bg-black/50 border-white/10"
+                  min="50"
+                  max="500"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Border Width</label>
+                <Input 
+                  type="number"
+                  value={settings.glow_width} 
+                  onChange={e => setSettings({ ...settings, glow_width: e.target.value })}
+                  className="bg-black/50 border-white/10"
+                  min="1"
+                  max="10"
+                  step="0.5"
+                />
+              </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Key ID</label>
+                  <label className="text-sm font-medium">Speed (Duration in seconds)</label>
                   <Input 
-                    value={settings.razorpay_key_id} 
-                    onChange={e => setSettings({ ...settings, razorpay_key_id: e.target.value })}
+                    type="number"
+                    value={settings.glow_duration} 
+                    onChange={e => setSettings({ ...settings, glow_duration: e.target.value })}
                     className="bg-black/50 border-white/10"
+                    min="2"
+                    max="60"
                   />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Key Secret</label>
-                  <Input 
-                    type="password"
-                    value={settings.razorpay_key_secret} 
-                    onChange={e => setSettings({ ...settings, razorpay_key_secret: e.target.value })}
-                    className="bg-black/50 border-white/10"
-                  />
+                  <p className="text-[10px] text-zinc-500">Lower is faster, higher is slower and smoother. Recommended: 4-15s</p>
                 </div>
 
-                <Button 
-                  onClick={() => handleUpdateSettings(['razorpay_key_id', 'razorpay_key_secret', 'razorpay_enabled'])}
-                  className="w-full"
-                  disabled={isLoading}
-                >
-                  Save Payment Settings
-                </Button>
-              </CardContent>
-            </Card>
-          </>
-        )}
+            </div>
+
+            <Button 
+              onClick={() => handleUpdateSettings(['glow_enabled', 'glow_color', 'glow_intensity', 'glow_width', 'glow_duration'])}
+              className="w-full"
+              disabled={isLoading}
+            >
+              Save Glow Settings
+            </Button>
+          </CardContent>
+        </Card>
 
         {/* Security Settings */}
         <Card className={cn("border-white/10 bg-zinc-900/50", role !== 'owner' && "lg:col-span-2")}>
