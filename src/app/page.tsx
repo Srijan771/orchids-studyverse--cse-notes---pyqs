@@ -150,7 +150,7 @@ export default async function Home() {
                   <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
                     <Zap className="h-6 w-6 text-primary" />
                   </div>
-                  <CardTitle className="text-xl">OOP in Java/C++</CardTitle>
+                  <CardTitle className="text-xl">OOP in C++</CardTitle>
                   <CardDescription className="text-zinc-400 mt-2">
                     Learn classes, objects, inheritance, and polymorphism with coding examples and diagrams.
                   </CardDescription>
@@ -161,10 +161,10 @@ export default async function Home() {
                   <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
                     <Zap className="h-6 w-6 text-primary" />
                   </div>
-                  <CardTitle className="text-xl">EEE</CardTitle>
-                  <CardDescription className="text-zinc-400 mt-2">
-                    Basic Electrical and Electronics Engineering concepts, circuit analysis, and fundamental principles.
-                  </CardDescription>
+                  <CardTitle className="text-xl">EEES</CardTitle>
+                    <CardDescription className="text-zinc-400 mt-2">
+                      Energy, Environmental and Engineering Science concepts, ecology, and fundamental principles.
+                    </CardDescription>
                 </CardHeader>
               </Card>
               <Card className="border-white/5 bg-zinc-900/20 hover:bg-zinc-900/40 transition-colors">
